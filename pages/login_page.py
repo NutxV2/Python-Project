@@ -5,8 +5,18 @@ import controller
 
 
 def render_login():
+    
     st.title("🔐 เข้าสู่ระบบ")
 
+
+    st.markdown("""
+    <div style="margin-bottom:20px;">
+        <h3>⭐ ข้อมูลส่วนตัว 🔥</h3>
+        <h4>ชื่อ: นครินทร์ งานายางหวาย</h4>
+        <h5>รหัสนักศึกษา: 6740259109</h5>
+        <hr>
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.form("login_form"):
         username = st.text_input("ชื่อผู้ใช้", placeholder="เช่น admin")
