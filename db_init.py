@@ -46,6 +46,43 @@ CREATE TABLE IF NOT EXISTS users (
     is_active INTEGER NOT NULL DEFAULT 1
 )
 """)
+
+# -------------------------
+# borrow system (NEW)
+# -------------------------
+c.execute("""
+CREATE TABLE IF NOT EXISTS borrow_tx (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  member_id INTEGER NOT NULL,
+  staff_user_id INTEGER NOT NULL,
+  borrow_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  default_due_date TEXT,
+  status TEXT NOT NULL DEFAULT 'open',
+  note TEXT,
+  FOREIGN KEY (member_id) REFERENCES members(id),
+  FOREIGN KEY (staff_user_id) REFERENCES users(id)
+)
+""")
+
+c.execute("""
+CREATE TABLE IF NOT EXISTS borrow_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tx_id INTEGER NOT NULL,
+  book_id INTEGER NOT NULL,
+  due_date TEXT,
+  return_date TEXT,
+  status TEXT NOT NULL DEFAULT 'borrowed',
+  return_staff_user_id INTEGER,
+  FOREIGN KEY (tx_id) REFERENCES borrow_tx(id),
+  FOREIGN KEY (book_id) REFERENCES books(id),
+  FOREIGN KEY (return_staff_user_id) REFERENCES users(id)
+)
+""")
+
+c.execute("CREATE INDEX IF NOT EXISTS idx_borrow_items_tx ON borrow_items(tx_id)")
+c.execute("CREATE INDEX IF NOT EXISTS idx_borrow_items_book ON borrow_items(book_id)")
+c.execute("CREATE INDEX IF NOT EXISTS idx_borrow_items_status ON borrow_items(status)")
+
 # seed admin (ถ้ายังไม่มี user เลย)  เพิ่มส่วนนี้ 
 c.execute("SELECT COUNT(*) FROM users")
 (count,) = c.fetchone()

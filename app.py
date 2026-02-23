@@ -5,8 +5,12 @@ from pages import borrow_page
 from pages import login_page
 from pages import admin_page
 from pages import report_page
+
+# ✅ ต้องเรียก set_page_config เป็น call แรกสุดก่อน Streamlit widget อื่น ๆ
+st.set_page_config(page_title="ระบบยืม-คืนหนังสือ", page_icon="📚", layout="wide")
+
 # =========================
-# View helpers (reset form)
+# Session state init
 # =========================
 
 if "is_logged_in" not in st.session_state:
@@ -46,7 +50,6 @@ if not st.session_state["is_logged_in"]:
     login_page.render_login()
     st.stop()
 
-st.set_page_config(page_title="ระบบยืม-คืนหนังสือ", page_icon="📚")
 st.title("📚 ระบบยืม-คืนหนังสือ (Streamlit + SQLite)")
 st.write("ตัวอย่าง Web App เชื่อมฐานข้อมูล (ปรับโครงสร้างแบบ MVC เชิงแนวคิด)")
 

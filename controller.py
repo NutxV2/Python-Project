@@ -45,12 +45,15 @@ def validate_book_input(title: str) -> list[str]:
 def get_books():
     return fetch_books()
 
+# alias สำหรับ booke_page ที่เรียก controller.fetch_books()
+fetch_books_ctrl = fetch_books
+
 def create_book(title: str, author: str):
     """คืนค่า (ok:bool, messages:list[str])"""
     errors = validate_book_input(title)
     if errors:
         return False, errors
-    model.add_book(title.strip(), author.strip())
+    insert_book(title.strip(), author.strip())
     return True, [f"✅ บันทึก '{title.strip()}' สำเร็จแล้ว"]
 
 
@@ -62,13 +65,11 @@ def remove_book(book_id: int):
 
 
 def edit_book(book_id, title, author):
+    """คืนค่า (ok:bool, messages:list[str])"""
     if title.strip() == "":
-        st.error("❌ ชื่อหนังสือห้ามว่าง")
-        return
-
+        return False, ["❌ ชื่อหนังสือห้ามว่าง"]
     update_book(book_id, title.strip(), author.strip())
-    st.success("✏️ แก้ไขข้อมูลเรียบร้อยแล้ว")
-    st.rerun()
+    return True, ["✏️ แก้ไขข้อมูลเรียบร้อยแล้ว"]
 
 
 def reset_member_form():
@@ -114,6 +115,41 @@ def add_member_controller(member_code, name, gender, email, phone, is_active):
 
 def get_members():
     return fetch_members()
+
+
+def create_member(member_code: str, name: str, gender: str, email: str, phone: str, is_active: bool = True):
+    """คืนค่า (ok:bool, messages:list[str]) — ใช้แทน add_member_controller สำหรับ member_page"""
+    errors = []
+    if member_code.strip() == "":
+        errors.append("❌ กรุณากรอก รหัสสมาชิก")
+    if name.strip() == "":
+        errors.append("❌ กรุณากรอก ชื่อ-นามสกุล")
+    if member_code_exists(member_code.strip()):
+        errors.append(f"❌ รหัสสมาชิก {member_code} มีอยู่แล้ว")
+    if email and email_exists(email.strip()):
+        errors.append(f"❌ อีเมล {email} ถูกใช้งานแล้ว")
+    if errors:
+        return False, errors
+    insert_member(member_code.strip(), name.strip(), gender, email.strip(), phone.strip(), is_active)
+    return True, ["✅ สมัครสมาชิกสำเร็จ"]
+
+
+def edit_member(member_id: int, member_code: str, name: str, gender: str, email: str, phone: str, is_active: bool = True):
+    """คืนค่า (ok:bool, messages:list[str]) — ใช้ใน member_page"""
+    errors = []
+    if member_code.strip() == "":
+        errors.append("❌ รหัสสมาชิกห้ามว่าง")
+    if name.strip() == "":
+        errors.append("❌ ชื่อ-นามสกุลห้ามว่าง")
+    if errors:
+        return False, errors
+    update_member(member_id, member_code.strip(), name.strip(), gender, email.strip(), phone.strip(), is_active)
+    return True, ["✏️ แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว"]
+
+
+def remove_member(member_id: int):
+    """ลบสมาชิก — ใช้ใน member_page"""
+    delete_member(member_id)
 
 
 def remove_member_controller(member_id):

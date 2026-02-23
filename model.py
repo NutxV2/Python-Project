@@ -118,7 +118,7 @@ def fetch_members():
     conn = get_connection()
     df = pd.read_sql_query(
         """
-        SELECT id, member_code, name, gender, email, phone, is_active, create_at
+        SELECT id, member_code, name, gender, email, phone, is_active, created_at
         FROM members
         """,
         conn

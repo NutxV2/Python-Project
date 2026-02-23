@@ -46,7 +46,7 @@ def render_book():
 
     # -------- Books: Read --------
     st.subheader("📖 รายการหนังสือทั้งหมดในระบบ")
-    books_df = controller.fetch_books()
+    books_df = controller.get_books()
     if books_df.empty:
         st.info("ยังไม่มีข้อมูลหนังสือในระบบ")
     else:
@@ -55,7 +55,7 @@ def render_book():
 
     # -------- Books: Delete --------
     st.subheader("🗑 ลบข้อมูลหนังสือ")
-    books_df = controller.fetch_books()
+    books_df = controller.get_books()
     if books_df.empty:
         st.info("ยังไม่มีข้อมูลหนังสือในระบบ")
     else:
